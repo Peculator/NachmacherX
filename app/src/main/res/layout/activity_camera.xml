@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <de.peculator.nachmacherx.CameraPreview
+        android:id="@+id/camera_preview"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent" />
+
+    <ImageView
+        android:id="@+id/overlay_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:gravity="center_vertical|right"
+        android:layout_gravity="center_vertical|right"
+        android:id="@+id/cameraMenu" android:background="#84113f97">
+
+
+        <Button
+            android:id="@+id/captureButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_vertical|right"
+            android:background="@drawable/ic_launcher"
+            android:alpha="100"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginBottom="5dp" />
+
+
+        <Button
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/changeCamera"
+            android:layout_gravity="center_vertical|right"
+            android:background="@drawable/ic_action_switch_camera"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginBottom="5dp" />
+
+
+        <Button
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/rotationRButton"
+            android:layout_gravity="center_vertical|right"
+            android:background="@drawable/ic_action_rotate_right"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginBottom="5dp" />
+
+        <Button
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+            android:id="@+id/visibilityButton"
+            android:textAlignment="center"
+            android:textColor="@color/abc_primary_text_disable_only_material_dark"
+            android:background="@android:drawable/gallery_thumb"
+            android:layout_gravity="center_vertical|right" />
+
+    </LinearLayout>
+
+</FrameLayout>

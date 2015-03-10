@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">NachmacherX</string>
+    <string name="fromGallery">Select Image from Gallery</string>
+
+    <string name="startText">Start</string>
+    <string name="startAgainText">Try again</string>
+
+    <string name="settingsOpenG">Open Gallery</string>
+    <string name="settingsRotate">Rotate Source Image</string>
+    <string name="settingsRotateResult">Rotate Result Image</string>
+    <string name="settingsOpenBrowser">Google Image Search</string>
+
+    <string name="camera_alpha">Visibility of the Overlay Image</string>
+    <string name="camera_rotate">Rotate the Overlay Image</string>
+    <string name="camera_switch">Switch Cameras</string>
+    <string name="camera_capture">Take an Image</string>
+
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="saveImage">Save Image</string>
+    <string name="save">Save</string>
+    <string name="button_photo">Take a new image</string>
+    <string name="settingsMirror">Mirror source image</string>
+    <string name="settingsMirrorResult">Mirror result image</string>
+    <string name="modifyImage">Modify image</string>
+
+    <string name="rotateR">Rotate right</string>
+    <string name="rotateL">Rotate left</string>
+    <string name="mirrorH">Mirror horizontally</string>
+    <string name="mirrorV">Mirror vertically</string>
+
+    <string name="noImageFound">No image selected!</string>
+
+    <string name="imageStored">Image stored</string>
+    <string name="imageAdded">Image added to gallery</string>
+
+</resources>
