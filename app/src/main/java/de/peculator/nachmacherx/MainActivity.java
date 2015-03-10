@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -45,6 +46,7 @@ public class MainActivity extends FragmentActivity {
     public static String TAG = "NACHMACHER_X";
     public static Bitmap overlay;
     public static Uri myLastImageURI = null;
+    private static int inProcess = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -244,12 +246,11 @@ public class MainActivity extends FragmentActivity {
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inJustDecodeBounds = true;
 
-
                 try {
                     if (Utils.hasImageCaptureBug()) {
                         myBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), Uri.fromFile(new File("/sdcard/tmp")));
                     } else {
-                        myBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), myLastImageURI);
+                        myBitmap = BitmapFactory.decodeFile(myLastImageURI.getPath(), options);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -262,7 +263,7 @@ public class MainActivity extends FragmentActivity {
                     if (Utils.hasImageCaptureBug()) {
                         myBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), Uri.fromFile(new File("/sdcard/tmp")));
                     } else {
-                        myBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), myLastImageURI);
+                        myBitmap = BitmapFactory.decodeFile(myLastImageURI.getPath(), options);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -292,7 +293,6 @@ public class MainActivity extends FragmentActivity {
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inJustDecodeBounds = true;
 
-
                 myPrefs.setLastURLResult(imgPath);
                 switchStartText();
                 myPrefs.storePreferences();
@@ -312,7 +312,8 @@ public class MainActivity extends FragmentActivity {
                     }
                 } else {
                     if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                        myBitmapResult = rotateImage(myBitmapResult, 0, false, myPrefs.getLastURLResult(), false);
+                        Log.d(MainActivity.TAG, "Nothing to do");
+                        //myBitmapResult = rotateImage(myBitmapResult, 0, false, myPrefs.getLastURLResult(), false);
                     } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                         myBitmapResult = rotateImage(myBitmapResult, 90, false, myPrefs.getLastURLResult(), false);
                     }
@@ -332,13 +333,13 @@ public class MainActivity extends FragmentActivity {
             myStartButton.setEnabled(true);
         }
 
-        private void showStoringDialog(final int whichImage) {
+        private void showModifyDialog(final int whichImage) {
             if (whichImage == 0 && myBitmap != null || whichImage == 1 && myBitmapResult != null) {
                 final String[] items = new String[]{getResources().getString(R.string.rotateR),
-                        getResources().getString(R.string.rotateL), getResources(). getString(R.string.mirrorH),
+                        getResources().getString(R.string.rotateL), getResources().getString(R.string.mirrorH),
                         getResources().getString(R.string.mirrorV)};
 
-                final Integer[] icons = new Integer[]{R.drawable.ic_launcher, R.drawable.ic_launcher,R.drawable.ic_launcher,R.drawable.ic_launcher};
+                final Integer[] icons = new Integer[]{R.drawable.ic_action_rotate_right, R.drawable.ic_action_rotate_left, R.drawable.android_flip, R.drawable.android_flip_v};
                 ListAdapter adapter = new ArrayAdapterWithIcon(getActivity(), items, icons);
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -380,81 +381,103 @@ public class MainActivity extends FragmentActivity {
                     }
                 })
 
-            .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
+                        .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+
+                builder.create();
+                builder.show();
+            } else
+
+            {
+                Toast.makeText(getActivity(), getResources().getString(R.string.noImageFound), Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        private void switchStartText() {
+            Button myStartButton = (Button) rootView.findViewById(R.id.buttonStart);
+            myStartButton.setText(getResources().getString(R.string.startAgainText));
+        }
+
+        private void switchStartTextBack() {
+            Button myStartButton = (Button) rootView.findViewById(R.id.buttonStart);
+            myStartButton.setText(getResources().getString(R.string.startText));
+        }
+
+
+        public void rotateImageSource(boolean special) {
+
+            myBitmap = rotateImage(myBitmap, 90, false, myPrefs.getLastURLSource(), special);
+
+            myImageView.setImageBitmap(myBitmap);
+            MainActivity.overlay = myBitmap;
+        }
+
+        public void rotateImageResult(boolean special) {
+            myBitmapResult = rotateImage(myBitmapResult, 90, false, myPrefs.getLastURLResult(), special);
+
+            myImageViewResult.setImageBitmap(myBitmapResult);
+        }
+
+        public void mirrorImageSource(boolean special) {
+            myBitmap = rotateImage(myBitmap, 0, true, myPrefs.getLastURLSource(), special);
+
+            myImageView.setImageBitmap(myBitmap);
+            MainActivity.overlay = myBitmap;
+        }
+
+        public void mirrorImageResult(boolean special) {
+            myBitmapResult = rotateImage(myBitmapResult, 0, true, myPrefs.getLastURLResult(), special);
+
+            myImageViewResult.setImageBitmap(myBitmapResult);
+        }
+
+        public Bitmap rotateImage(Bitmap bitmap, float value, boolean isMirrored, String path, boolean special) {
+            if (bitmap != null) {
+                Log.i(TAG, "rotating");
+                // create new matrix object
+                Matrix matrix = new Matrix();
+
+                value = (special) ? (360 - value) : value;
+
+                matrix.postRotate(value);
+
+                if (isMirrored) {
+                    matrix.postScale(-1, 1);
+                    if (special) matrix.postScale(1, -1);
                 }
-            });
 
-            builder.create();
-            builder.show();
+                // return new bitmap rotated using matrix
+                bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(),
+                        matrix, true);
+
+                if (path != null) {
+                    StoreBitmapTask async = new StoreBitmapTask(matrix, path);
+                    MainActivity.inProcess++;
+                    async.execute();
+                }
+            } else {
+                Toast.makeText(getActivity(), getResources().getString(R.string.noImageFound), Toast.LENGTH_SHORT).show();
+            }
+            Log.i(TAG, "rotating finished");
+
+            return bitmap;
         }
 
-        else
+        private class StoreBitmapTask extends AsyncTask<Void, Void, Void> {
+            Matrix matrix;
+            String path;
 
-        {
-            Toast.makeText(getActivity(), getResources().getString(R.string.noImageFound), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void switchStartText() {
-        Button myStartButton = (Button) rootView.findViewById(R.id.buttonStart);
-        myStartButton.setText(getResources().getString(R.string.startAgainText));
-    }
-
-    private void switchStartTextBack() {
-        Button myStartButton = (Button) rootView.findViewById(R.id.buttonStart);
-        myStartButton.setText(getResources().getString(R.string.startText));
-    }
-
-
-    public void rotateImageSource(boolean special) {
-
-        myBitmap = rotateImage(myBitmap, 90, false, myPrefs.getLastURLSource(), special);
-
-        myImageView.setImageBitmap(myBitmap);
-        MainActivity.overlay = myBitmap;
-    }
-
-    public void rotateImageResult(boolean special) {
-        myBitmapResult = rotateImage(myBitmapResult, 90, false, myPrefs.getLastURLResult(), special);
-
-        myImageViewResult.setImageBitmap(myBitmapResult);
-    }
-
-    public void mirrorImageSource(boolean special) {
-        myBitmap = rotateImage(myBitmap, 0, true, myPrefs.getLastURLSource(), special);
-
-        myImageView.setImageBitmap(myBitmap);
-        MainActivity.overlay = myBitmap;
-    }
-
-    public void mirrorImageResult(boolean special) {
-        myBitmapResult = rotateImage(myBitmapResult, 0, true, myPrefs.getLastURLResult(), special);
-
-        myImageViewResult.setImageBitmap(myBitmapResult);
-    }
-
-    public Bitmap rotateImage(Bitmap bitmap, float value, boolean isMirrored, String path, boolean special) {
-        if (bitmap != null) {
-            // create new matrix object
-            Matrix matrix = new Matrix();
-
-            value = (special) ? (360 - value) : value;
-
-            matrix.postRotate(value);
-
-            if (isMirrored) {
-                matrix.postScale(-1, 1);
-                if (special) matrix.postScale(1, -1);
+            private StoreBitmapTask(Matrix matrix, String path) {
+                this.matrix = matrix;
+                this.path = path;
             }
 
-            // return new bitmap rotated using matrix
-            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(),
-                    matrix, true);
-
-            if (path != null) {
+            @Override
+            protected Void doInBackground(Void... params) {
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inSampleSize = 1;
                 Bitmap tmp = BitmapFactory.decodeFile(path, options);
@@ -481,172 +504,198 @@ public class MainActivity extends FragmentActivity {
                     return null;
                 }
                 CameraActivity.addImageToGallery(path, getActivity());
+                return null;
             }
-        } else {
-            Toast.makeText(getActivity(), getResources().getString(R.string.noImageFound), Toast.LENGTH_SHORT).show();
+
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                MainActivity.inProcess--;
+                Log.d(MainActivity.TAG, "Finished storing " + MainActivity.inProcess);
+                Toast.makeText(getActivity(), getResources().getString(R.string.finishedStoring), Toast.LENGTH_SHORT).show();
+            }
         }
 
-        return bitmap;
-    }
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+            setHasOptionsMenu(true);
+            rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        setHasOptionsMenu(true);
-        rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            // check orientation and change it
+            changeLayout();
+            myImageView = (ImageView) rootView.findViewById(R.id.imageView);
+            Log.i(TAG, myImageView.getWidth() + "");
+            myImageViewResult = (ImageView) rootView.findViewById(R.id.newImageView);
 
-        // check orientation and change it
-        changeLayout();
-        myImageView = (ImageView) rootView.findViewById(R.id.imageView);
-        Log.i(TAG, myImageView.getWidth() + "");
-        myImageViewResult = (ImageView) rootView.findViewById(R.id.newImageView);
-
-        myImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (myBitmap != null) {
-                    Intent i = new Intent(getActivity(), ImageViewer.class);
-                    i.putExtra("path", 1);
-                    startActivity(i);
+            myImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (myBitmap != null) {
+                        if(MainActivity.inProcess == 0) {
+                            Intent i = new Intent(getActivity(), ImageViewer.class);
+                            i.putExtra("path", 1);
+                            startActivity(i);
+                        }else{
+                            Toast.makeText(getActivity(),getString(R.string.inprocess)+":"+MainActivity.inProcess,Toast.LENGTH_LONG).show();
+                        }
+                    }
                 }
-            }
-        });
+            });
 
-        myImageView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                showStoringDialog(0);
-                return true;
-            }
-        });
-
-        myImageViewResult.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (myPrefs.getLastURLResult() != "") {
-                    Intent i = new Intent(getActivity(), ImageViewer.class);
-                    i.putExtra("path", 2);
-                    startActivity(i);
+            myImageView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if(myBitmap!=null) {
+                        if (MainActivity.inProcess == 0) {
+                            showModifyDialog(0);
+                        } else {
+                            Toast.makeText(getActivity(), getString(R.string.inprocess) + ":" + MainActivity.inProcess, Toast.LENGTH_LONG).show();
+                        }
+                    }
+                    return true;
                 }
-            }
-        });
+            });
 
-        myImageViewResult.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                showStoringDialog(1);
-                return true;
-            }
-        });
+            myImageViewResult.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (myPrefs.getLastURLResult() != "" && myBitmapResult!=null) {
+                        if(MainActivity.inProcess == 0) {
+                            Intent i = new Intent(getActivity(), ImageViewer.class);
+                            i.putExtra("path", 2);
+                            startActivity(i);
+                        }
+                        else {
+                            Toast.makeText(getActivity(), getString(R.string.inprocess) + ":" + MainActivity.inProcess, Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
+            });
+
+            myImageViewResult.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if(myBitmapResult!=null) {
+                        if (MainActivity.inProcess == 0) {
+                            showModifyDialog(1);
+                        } else {
+                            Toast.makeText(getActivity(), getString(R.string.inprocess) + ":" + MainActivity.inProcess, Toast.LENGTH_LONG).show();
+                        }
+                    }
+                    return true;
+                }
+            });
 
 
-        if (savedInstanceState != null) {
-            // Restore last state
-            myBitmap = savedInstanceState.getParcelable("myBit");
-            myBitmapResult = savedInstanceState.getParcelable("myBitRes");
-            enableStart();
-
-            if (myBitmap != null) {
-                myImageView.setImageBitmap(myBitmap);
-                MainActivity.overlay = myBitmap;
+            if (savedInstanceState != null) {
+                // Restore last state
+                myBitmap = savedInstanceState.getParcelable("myBit");
+                myBitmapResult = savedInstanceState.getParcelable("myBitRes");
                 enableStart();
+
+                if (myBitmap != null) {
+                    myImageView.setImageBitmap(myBitmap);
+                    MainActivity.overlay = myBitmap;
+                    enableStart();
+                }
+
+                if (myBitmapResult != null)
+                    myImageViewResult.setImageBitmap(myBitmapResult);
+            } else {
+                //Load last image
+                if (myBitmap == null) {
+                    try {
+
+                        if (new File(myPrefs.getLastURLSource()).exists()) {
+                            BitmapFactory.Options options = new BitmapFactory.Options();
+                            options.inJustDecodeBounds = true;
+
+                            myBitmap = BitmapFactory.decodeFile(myPrefs.getLastURLSource(), options);
+
+                            options.inJustDecodeBounds = false;
+                            options.inSampleSize = Utils.calculateInSampleSize(options, myImageView.getWidth(), myImageView.getHeight());
+
+                            myBitmap = BitmapFactory.decodeFile(myPrefs.getLastURLSource(), options);
+
+                            myImageView.setImageBitmap(myBitmap);
+                            MainActivity.overlay = myBitmap;
+                            enableStart();
+                        } else {
+                            Log.e(TAG, "File does not exist anymore");
+                        }
+
+                    } catch (Exception e) {
+                        Log.e(TAG, e.toString());
+                        myImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_launcher));
+                    }
+                }
+
+                if (myBitmapResult == null) {
+                    try {
+                        if (new File(myPrefs.getLastURLResult()).exists()) {
+                            BitmapFactory.Options options = new BitmapFactory.Options();
+                            options.inJustDecodeBounds = true;
+
+                            myBitmapResult = BitmapFactory.decodeFile(myPrefs.getLastURLResult(), options);
+
+                            options.inJustDecodeBounds = false;
+                            options.inSampleSize = Utils.calculateInSampleSize(options, myImageViewResult.getWidth(), myImageViewResult.getHeight());
+                            myBitmapResult = BitmapFactory.decodeFile(myPrefs.getLastURLResult(), options);
+
+                            myImageViewResult.setImageBitmap(myBitmapResult);
+                        }
+
+                    } catch (Exception e) {
+                        Log.e(TAG, e.toString());
+                        myImageViewResult.setImageDrawable(getResources().getDrawable(R.drawable.ic_launcher));
+                    }
+                }
             }
 
-            if (myBitmapResult != null)
-                myImageViewResult.setImageBitmap(myBitmapResult);
-        } else {
-            //Load last image
-            if (myBitmap == null) {
-                try {
+            Button galleryButton = (Button) rootView.findViewById(R.id.buttonGallery);
+            galleryButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(
+                            Intent.ACTION_PICK,
+                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
-                    if (new File(myPrefs.getLastURLSource()).exists()) {
-                        BitmapFactory.Options options = new BitmapFactory.Options();
-                        options.inJustDecodeBounds = true;
+                    startActivityForResult(i, RESULT_LOAD_IMAGE);
+                }
+            });
 
-                        myBitmap = BitmapFactory.decodeFile(myPrefs.getLastURLSource(), options);
+            Button takeImageButton = (Button) rootView.findViewById(R.id.buttonPhoto);
+            takeImageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    File photoFile = CameraActivity.getOutputMediaFile(false);
 
-                        options.inJustDecodeBounds = false;
-                        options.inSampleSize = Utils.calculateInSampleSize(options, myImageView.getWidth(), myImageView.getHeight());
-
-                        myBitmap = BitmapFactory.decodeFile(myPrefs.getLastURLSource(), options);
-
-                        myImageView.setImageBitmap(myBitmap);
-                        MainActivity.overlay = myBitmap;
-                        enableStart();
+                    myLastImageURI = Uri.fromFile(photoFile);
+                    if (Utils.hasImageCaptureBug()) {
+                        takePictureIntent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File("/sdcard/tmp")));
                     } else {
-                        Log.e(TAG, "File does not exist anymore");
+                        takePictureIntent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
                     }
-
-                } catch (Exception e) {
-                    Log.e(TAG, e.toString());
-                    myImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_launcher));
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
                 }
-            }
+            });
 
-            if (myBitmapResult == null) {
-                try {
-                    if (new File(myPrefs.getLastURLResult()).exists()) {
-                        BitmapFactory.Options options = new BitmapFactory.Options();
-                        options.inJustDecodeBounds = true;
-
-                        myBitmapResult = BitmapFactory.decodeFile(myPrefs.getLastURLResult(), options);
-
-                        options.inJustDecodeBounds = false;
-                        options.inSampleSize = Utils.calculateInSampleSize(options, myImageViewResult.getWidth(), myImageViewResult.getHeight());
-                        myBitmapResult = BitmapFactory.decodeFile(myPrefs.getLastURLResult(), options);
-
-                        myImageViewResult.setImageBitmap(myBitmapResult);
-                    }
-
-                } catch (Exception e) {
-                    Log.e(TAG, e.toString());
-                    myImageViewResult.setImageDrawable(getResources().getDrawable(R.drawable.ic_launcher));
+            Button startButton = (Button) rootView.findViewById(R.id.buttonStart);
+            startButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), CameraActivity.class);
+                    startActivityForResult(intent, REQUEST_CAMERA_IMAGE);
                 }
-            }
+            });
+
+            return rootView;
         }
 
-        Button galleryButton = (Button) rootView.findViewById(R.id.buttonGallery);
-        galleryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(
-                        Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
-                startActivityForResult(i, RESULT_LOAD_IMAGE);
-            }
-        });
-
-        Button takeImageButton = (Button) rootView.findViewById(R.id.buttonPhoto);
-        takeImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                File photoFile = CameraActivity.getOutputMediaFile(false);
-
-                myLastImageURI = Uri.fromFile(photoFile);
-                if (Utils.hasImageCaptureBug()) {
-                    takePictureIntent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File("/sdcard/tmp")));
-                } else {
-                    takePictureIntent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
-                }
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-            }
-        });
-
-        Button startButton = (Button) rootView.findViewById(R.id.buttonStart);
-        startButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), CameraActivity.class);
-                startActivityForResult(intent, REQUEST_CAMERA_IMAGE);
-            }
-        });
-
-        return rootView;
     }
-
-
-}
 }

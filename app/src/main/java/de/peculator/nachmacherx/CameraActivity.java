@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.hardware.Camera;
@@ -34,6 +35,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import static de.peculator.nachmacherx.Utils.getRatio;
 
@@ -196,7 +198,7 @@ public class CameraActivity extends Activity implements Camera.PictureCallback {
                     MainActivity.overlay = Bitmap.createBitmap(MainActivity.overlay, 0, 0, MainActivity.overlay.getWidth(), MainActivity.overlay.getHeight(),
                             matrix, true);
 
-                    float maxRatio = getRatio(MainActivity.overlay);
+                    float maxRatio = getRatio(MainActivity.overlay,myImageView);
 
                     myImageView.setImageBitmap(Bitmap.createScaledBitmap(MainActivity.overlay,
                             (int) ((float) MainActivity.overlay.getWidth() / maxRatio), (int) ((float) MainActivity.overlay.getHeight() / maxRatio), false));
@@ -278,7 +280,9 @@ public class CameraActivity extends Activity implements Camera.PictureCallback {
         final Camera.Size size = getOptimalSize(mCamera,
                 getWindowManager());
         params.setJpegQuality(100);
-        params.setPictureSize(getOptimalPictureSize(mCamera).width, getOptimalPictureSize(mCamera).height);
+
+        Camera.Size picSize = getOptimalPictureSize(mCamera);
+        params.setPictureSize(picSize.width, picSize.height);
 
         mPreview.setLayoutParams(new FrameLayout.LayoutParams(size.width,
                 size.height, Gravity.CENTER));
@@ -296,7 +300,7 @@ public class CameraActivity extends Activity implements Camera.PictureCallback {
             a = Bitmap.createBitmap(a, 0, 0, a.getWidth(), a.getHeight(),
                     matrix, true);
 
-            float maxRatio = getRatio(a);
+            float maxRatio = getRatio(a,myImageView);
 
             myImageView.setImageBitmap(Bitmap.createScaledBitmap(a,
                     (int) ((float) a.getWidth() / maxRatio), (int) ((float) a.getHeight() / maxRatio), false));
@@ -306,20 +310,62 @@ public class CameraActivity extends Activity implements Camera.PictureCallback {
         if (myPrefs.isFrontCamera())
             params.set("camera-id", 2);
         else {
-            params.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
+            params.set("camera-id", 1);
+        }
+
+        if(hasCameraAutofocus(mCamera)){
+            Log.i(MainActivity.TAG,"Autofocus");
             params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
         }
 
+        if(hasCameraFlash(mCamera)){
+            params.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
+        }
+
         params.setPreviewSize(size.width, size.height);
+        params.setWhiteBalance(Camera.Parameters.WHITE_BALANCE_AUTO);
+        params.setSceneMode(Camera.Parameters.SCENE_MODE_AUTO);
+        params.setAntibanding(Camera.Parameters.ANTIBANDING_AUTO);
+
         mCamera.setParameters(params);
 
         mPreview.init(mCamera);
+    }
 
+    public static boolean hasCameraFlash(Camera camera) {
+        List<String> supportedFlashModes = camera.getParameters().getSupportedFlashModes();
+        return supportedFlashModes != null && supportedFlashModes.contains(Camera.Parameters.FLASH_MODE_AUTO);
+    }
+
+    public static boolean hasCameraAutofocus(Camera camera) {
+        List<String> supportedFocusModes = camera.getParameters().getSupportedFocusModes();
+        return supportedFocusModes != null && supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO) &&
+                camera.getParameters().getFocusMode()!= Camera.Parameters.FOCUS_MODE_FIXED &&
+                camera.getParameters().getFocusMode()!= Camera.Parameters.FOCUS_MODE_EDOF &&
+                camera.getParameters().getFocusMode()!= Camera.Parameters.FOCUS_MODE_INFINITY;
     }
 
     public static Camera.Size getOptimalPictureSize(Camera cam) {
         final Camera.Parameters parameters = cam.getParameters();
 
+
+        if (MainActivity.myPrefs.getLastURLSource() != "") {
+            BitmapFactory.Options ops = new BitmapFactory.Options();
+            ops.inJustDecodeBounds = true;
+
+            BitmapFactory.decodeFile(MainActivity.myPrefs.getLastURLSource(), ops);
+
+            for (int i = 0; i <parameters.getSupportedPictureSizes().size() ; i++) {
+                if(parameters.getSupportedPictureSizes().get(i).width == ops.outWidth &&
+                        parameters.getSupportedPictureSizes().get(i).height == ops.outHeight ||
+                        parameters.getSupportedPictureSizes().get(i).width == ops.outHeight &&
+                                parameters.getSupportedPictureSizes().get(i).height == ops.outWidth ) {
+                    Log.i(MainActivity.TAG, "Same Size:" +parameters.getSupportedPictureSizes().get(i).width + ":" + parameters.getSupportedPictureSizes().get(i).height);
+                    return parameters.getSupportedPictureSizes().get(i);
+                }
+            }
+
+        }
         Log.i(MainActivity.TAG, parameters.getSupportedPictureSizes().get(0).width + ":" + parameters.getSupportedPictureSizes().get(0).height);
         return parameters.getSupportedPictureSizes().get(0);
     }

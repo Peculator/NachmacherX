@@ -36,5 +36,7 @@
 
     <string name="imageStored">Image stored</string>
     <string name="imageAdded">Image added to gallery</string>
+    <string name="inprocess">Currently, storing processes are still in action</string>
+    <string name="finishedStoring">Image stored</string>
 
 </resources>
