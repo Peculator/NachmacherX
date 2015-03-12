@@ -534,7 +534,7 @@ public class MainActivity extends FragmentActivity {
                 @Override
                 public void onClick(View v) {
                     if (myBitmap != null) {
-                        if(MainActivity.inProcess == 0) {
+                        if(MainActivity.inProcess == 0 || myBitmapResult==null) {
                             Intent i = new Intent(getActivity(), ImageViewer.class);
                             i.putExtra("path", 1);
                             startActivity(i);
@@ -562,8 +562,8 @@ public class MainActivity extends FragmentActivity {
             myImageViewResult.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (myPrefs.getLastURLResult() != "" && myBitmapResult!=null) {
-                        if(MainActivity.inProcess == 0) {
+                    if (myPrefs.getLastURLResult() != "" && myBitmapResult!=null ) {
+                        if(MainActivity.inProcess == 0 || myBitmapResult==null) {
                             Intent i = new Intent(getActivity(), ImageViewer.class);
                             i.putExtra("path", 2);
                             startActivity(i);

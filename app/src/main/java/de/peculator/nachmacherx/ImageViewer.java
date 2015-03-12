@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -27,8 +26,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import static de.peculator.nachmacherx.Utils.getRatio;
-
 /**
  * Created by sven on 25.02.15.
  */
@@ -37,6 +34,8 @@ public class ImageViewer extends Activity {
     private ImageSwitcher view;
     private Bitmap splitImageA;
     private Bitmap splitImageB;
+    private Bitmap bitmapA;
+    private Bitmap bitmapB;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,6 +60,34 @@ public class ImageViewer extends Activity {
         });
 
         currentCommand = getIntent().getIntExtra("path", 1);
+
+        String path = getImagePath(1);
+        if (path != "" && path != null) {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+
+            BitmapFactory.decodeFile(path, options);
+
+            options.inSampleSize = Utils.calculateInSampleSize(options, view.getWidth(), view.getHeight());
+            options.inJustDecodeBounds = false;
+            options.inMutable=true;
+
+            bitmapA = BitmapFactory.decodeFile(path, options);
+        }
+
+        path = getImagePath(2);
+        if (path != "" && path != null) {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+
+            BitmapFactory.decodeFile(path, options);
+
+            options.inSampleSize = Utils.calculateInSampleSize(options, view.getWidth(), view.getHeight());
+            options.inJustDecodeBounds = false;
+            options.inMutable=true;
+
+            bitmapB = BitmapFactory.decodeFile(path, options);
+        }
 
 
         if (hasTwoImages()) {
@@ -148,56 +175,63 @@ public class ImageViewer extends Activity {
 
     private void generateSplitBitmap() {
 
-        BitmapFactory.Options options = new BitmapFactory.Options();
-
-        options.inSampleSize = 1;
-        options.inJustDecodeBounds=false;
-
-        Bitmap bitmapA = BitmapFactory.decodeFile(getImagePath(1), options);
-        Bitmap bitmapB = BitmapFactory.decodeFile(getImagePath(2), options);
 
         splitImageA = combineImages(bitmapA, bitmapB);
         splitImageB = combineImages(bitmapB, bitmapA);
-        Log.i(MainActivity.TAG,"combined");
+        Log.i(MainActivity.TAG, "combined");
     }
 
     public Bitmap combineImages(Bitmap c, Bitmap s) { // can add a 3rd parameter 'String loc' if you want to save the new image - left some code to do that at the bottom
 
+        int yOffset = 0;
+        Log.i(MainActivity.TAG,c.getWidth()+ " -(1)- " + s.getWidth() + " : " + c.getWidth()*(s.getHeight()/c.getHeight()));
+
+        //First image is smaller
+        if (c.getHeight() <= s.getHeight()) {
+            c = Bitmap.createScaledBitmap(c,(int)(c.getWidth()*(float)s.getHeight()/(float)c.getHeight()),s.getHeight(),false);
+            yOffset = (s.getHeight() - c.getHeight()) / 2;
+        }
+        //Second image is smaller
+        if (c.getHeight() > s.getHeight()) {
+            s = Bitmap.createScaledBitmap(s,(int)(s.getWidth()*(float)c.getHeight()/(float)s.getHeight()),c.getHeight(),false);
+            yOffset = (c.getHeight() - s.getHeight()) / 2;
+        }
+        Log.i(MainActivity.TAG,c.getWidth()+ " -(2)- " + s.getWidth()+ " : " + c.getWidth()*(s.getHeight()/c.getHeight()));
+
         int width = c.getWidth() / 2 + s.getWidth() / 2;
-        int height = (c.getHeight()>=s.getHeight())?c.getHeight():s.getHeight();
+        int height = (c.getHeight() >= s.getHeight()) ? c.getHeight() : s.getHeight();
 
 
         Bitmap cs = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 
         Canvas comboImage = new Canvas(cs);
 
-        //First image is smaller
-        if(c.getHeight()<=s.getHeight()){
-            int yOffset = (s.getHeight()-c.getHeight())/2;
 
-            Rect r=new Rect(0,0,c.getWidth()/2,c.getHeight());
-            Rect drawR=new Rect(0,yOffset,c.getWidth()/2,c.getHeight()+yOffset);
+        //First image is smaller
+        if (c.getHeight() <= s.getHeight()) {
+
+            Rect r = new Rect(0, 0, c.getWidth() / 2, c.getHeight());
+            Rect drawR = new Rect(0, yOffset, c.getWidth() / 2, c.getHeight() + yOffset);
 
             comboImage.drawBitmap(c, r, drawR, null);
 
-            Rect r_right=new Rect(s.getWidth()/2,0,s.getWidth(),s.getHeight());
-            Rect drawR_right=new Rect(c.getWidth()/2, 0, s.getWidth()/2+c.getWidth()/2, s.getHeight());
+            Rect r_right = new Rect(s.getWidth() / 2, 0, s.getWidth(), s.getHeight());
+            Rect drawR_right = new Rect(c.getWidth() / 2, 0, s.getWidth() / 2 + c.getWidth() / 2, s.getHeight());
 
-            comboImage.drawBitmap(s, r_right,drawR_right, null);
+            comboImage.drawBitmap(s, r_right, drawR_right, null);
         }
         //Second image is smaller
-        else{
-            int yOffset = (c.getHeight()-s.getHeight())/2;
+        else {
 
-            Rect r=new Rect(0,0,c.getWidth()/2,c.getHeight());
-            Rect drawR=new Rect(0,0,c.getWidth()/2,c.getHeight());
+            Rect r = new Rect(0, 0, c.getWidth() / 2, c.getHeight());
+            Rect drawR = new Rect(0, 0, c.getWidth() / 2, c.getHeight());
 
             comboImage.drawBitmap(c, r, drawR, null);
 
-            Rect r_right=new Rect(s.getWidth()/2,0,s.getWidth(),s.getHeight());
-            Rect drawR_right=new Rect(c.getWidth()/2,yOffset,s.getWidth()/2+c.getWidth()/2,s.getHeight()+yOffset);
+            Rect r_right = new Rect(s.getWidth() / 2, 0, s.getWidth(), s.getHeight());
+            Rect drawR_right = new Rect(c.getWidth() / 2, yOffset, s.getWidth() / 2 + c.getWidth() / 2, s.getHeight() + yOffset);
 
-            comboImage.drawBitmap(s, r_right,drawR_right, null);
+            comboImage.drawBitmap(s, r_right, drawR_right, null);
         }
 
         return cs;
@@ -214,26 +248,19 @@ public class ImageViewer extends Activity {
     private Bitmap getBitmap() {
 
 
-        Bitmap ops = null;
-        Log.i(MainActivity.TAG,splitImageA.getWidth() + " " + (float)splitImageA.getHeight());
+        Log.i(MainActivity.TAG, currentCommand +"");
 
-        if (currentCommand == 3 && splitImageA.getWidth()>0) return Bitmap.createScaledBitmap(splitImageA,1000,(int)(1000f/((float)splitImageA.getWidth()/(float)splitImageA.getHeight())),false);
-        if (currentCommand == 4 && splitImageB.getWidth()>0) return Bitmap.createScaledBitmap(splitImageB,1000,(int)(1000f/((float)splitImageB.getWidth()/(float)splitImageB.getHeight())),false);
+        if (currentCommand == 3 && splitImageA != null)
+            return Bitmap.createScaledBitmap(splitImageA, 1000, (int) (1000f / ((float) splitImageA.getWidth() / (float) splitImageA.getHeight())), false);
+        if (currentCommand == 4 && splitImageB != null)
+            return Bitmap.createScaledBitmap(splitImageB, 1000, (int) (1000f / ((float) splitImageB.getWidth() / (float) splitImageB.getHeight())), false);
 
-        String path = getImagePath(currentCommand);
-        if (path != "") {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds=true;
+        if (currentCommand == 1 && bitmapA != null)
+            return Bitmap.createScaledBitmap(bitmapA, 1000, (int) (1000f / ((float) bitmapA.getWidth() / (float) bitmapA.getHeight())), false);
+        if (currentCommand == 2 && bitmapB != null)
+            return Bitmap.createScaledBitmap(bitmapB, 1000, (int) (1000f / ((float) bitmapB.getWidth() / (float) bitmapB.getHeight())), false);
 
-            BitmapFactory.decodeFile(path, options);
-
-            options.inSampleSize=Utils.calculateInSampleSize(options,view.getWidth(),view.getHeight());
-            options.inJustDecodeBounds=false;
-
-            ops = BitmapFactory.decodeFile(path, options);
-
-        }
-        return ops;
+        return null;
     }
 
     private String getImagePath(int command) {
@@ -246,7 +273,10 @@ public class ImageViewer extends Activity {
                 path = MainActivity.myPrefs.getLastURLResult();
                 break;
         }
-        return path;
+        if (new File(path).exists())
+            return path;
+        else
+            return null;
     }
 
     private void nextImage() {
