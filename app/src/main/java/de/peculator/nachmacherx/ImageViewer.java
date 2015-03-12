@@ -236,7 +236,6 @@ public class ImageViewer extends Activity {
         }
 
         // Blendzone
-        // Left half
         Bitmap blend = Bitmap.createBitmap(blendZone, height, Bitmap.Config.ARGB_4444);
 
         for (int i = 0; i < blendZone; i++) {
@@ -256,6 +255,10 @@ public class ImageViewer extends Activity {
         }
 
         comboImage.drawBitmap(blend, c.getWidth() / 2 - blendZone / 2, 0, null);
+
+        Bitmap b = BitmapFactory.decodeResource(getResources(),R.drawable.ic_launcher);
+        // Logo
+        comboImage.drawBitmap(b, width-b.getWidth(), height-b.getHeight(), null);
 
         return cs;
     }
