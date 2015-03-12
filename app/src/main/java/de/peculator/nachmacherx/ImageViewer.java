@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -70,7 +71,7 @@ public class ImageViewer extends Activity {
 
             options.inSampleSize = Utils.calculateInSampleSize(options, view.getWidth(), view.getHeight());
             options.inJustDecodeBounds = false;
-            options.inMutable=true;
+            options.inMutable = true;
 
             bitmapA = BitmapFactory.decodeFile(path, options);
         }
@@ -84,7 +85,7 @@ public class ImageViewer extends Activity {
 
             options.inSampleSize = Utils.calculateInSampleSize(options, view.getWidth(), view.getHeight());
             options.inJustDecodeBounds = false;
-            options.inMutable=true;
+            options.inMutable = true;
 
             bitmapB = BitmapFactory.decodeFile(path, options);
         }
@@ -184,22 +185,23 @@ public class ImageViewer extends Activity {
     public Bitmap combineImages(Bitmap c, Bitmap s) { // can add a 3rd parameter 'String loc' if you want to save the new image - left some code to do that at the bottom
 
         int yOffset = 0;
-        Log.i(MainActivity.TAG,c.getWidth()+ " -(1)- " + s.getWidth() + " : " + c.getWidth()*(s.getHeight()/c.getHeight()));
+
 
         //First image is smaller
         if (c.getHeight() <= s.getHeight()) {
-            c = Bitmap.createScaledBitmap(c,(int)(c.getWidth()*(float)s.getHeight()/(float)c.getHeight()),s.getHeight(),false);
+            c = Bitmap.createScaledBitmap(c, (int) (c.getWidth() * (float) s.getHeight() / (float) c.getHeight()), s.getHeight(), false);
             yOffset = (s.getHeight() - c.getHeight()) / 2;
         }
         //Second image is smaller
         if (c.getHeight() > s.getHeight()) {
-            s = Bitmap.createScaledBitmap(s,(int)(s.getWidth()*(float)c.getHeight()/(float)s.getHeight()),c.getHeight(),false);
+            s = Bitmap.createScaledBitmap(s, (int) (s.getWidth() * (float) c.getHeight() / (float) s.getHeight()), c.getHeight(), false);
             yOffset = (c.getHeight() - s.getHeight()) / 2;
         }
-        Log.i(MainActivity.TAG,c.getWidth()+ " -(2)- " + s.getWidth()+ " : " + c.getWidth()*(s.getHeight()/c.getHeight()));
+        Log.i(MainActivity.TAG, c.getWidth() + " -(2)- " + s.getWidth() + " : " + c.getWidth() * (s.getHeight() / c.getHeight()));
 
         int width = c.getWidth() / 2 + s.getWidth() / 2;
         int height = (c.getHeight() >= s.getHeight()) ? c.getHeight() : s.getHeight();
+        int blendZone = width / 10;
 
 
         Bitmap cs = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
@@ -210,29 +212,52 @@ public class ImageViewer extends Activity {
         //First image is smaller
         if (c.getHeight() <= s.getHeight()) {
 
-            Rect r = new Rect(0, 0, c.getWidth() / 2, c.getHeight());
-            Rect drawR = new Rect(0, yOffset, c.getWidth() / 2, c.getHeight() + yOffset);
+            Rect r = new Rect(0, 0, c.getWidth() / 2 - blendZone / 2, c.getHeight());
+            Rect drawR = new Rect(0, yOffset, c.getWidth() / 2 - blendZone / 2, c.getHeight() + yOffset);
 
             comboImage.drawBitmap(c, r, drawR, null);
 
-            Rect r_right = new Rect(s.getWidth() / 2, 0, s.getWidth(), s.getHeight());
-            Rect drawR_right = new Rect(c.getWidth() / 2, 0, s.getWidth() / 2 + c.getWidth() / 2, s.getHeight());
+            Rect r_right = new Rect(s.getWidth() / 2 + blendZone / 2, 0, s.getWidth(), s.getHeight());
+            Rect drawR_right = new Rect(c.getWidth() / 2 + blendZone / 2, 0, s.getWidth() / 2 + c.getWidth() / 2, s.getHeight());
 
             comboImage.drawBitmap(s, r_right, drawR_right, null);
+
         }
         //Second image is smaller
         else {
 
-            Rect r = new Rect(0, 0, c.getWidth() / 2, c.getHeight());
-            Rect drawR = new Rect(0, 0, c.getWidth() / 2, c.getHeight());
+            Rect r = new Rect(0, 0, c.getWidth() / 2 - blendZone / 2, c.getHeight());
+            Rect drawR = new Rect(0, 0, c.getWidth() / 2 - blendZone / 2, c.getHeight());
 
             comboImage.drawBitmap(c, r, drawR, null);
 
-            Rect r_right = new Rect(s.getWidth() / 2, 0, s.getWidth(), s.getHeight());
-            Rect drawR_right = new Rect(c.getWidth() / 2, yOffset, s.getWidth() / 2 + c.getWidth() / 2, s.getHeight() + yOffset);
+            Rect r_right = new Rect(s.getWidth() / 2 + blendZone / 2, 0, s.getWidth(), s.getHeight());
+            Rect drawR_right = new Rect(c.getWidth() / 2 + blendZone / 2, yOffset, s.getWidth() / 2 + c.getWidth() / 2, s.getHeight() + yOffset);
 
             comboImage.drawBitmap(s, r_right, drawR_right, null);
         }
+
+        // Blendzone
+        // Left half
+        Bitmap blend = Bitmap.createBitmap(blendZone, height, Bitmap.Config.ARGB_4444);
+
+        for (int i = 0; i < blendZone; i++) {
+            float ratio = 1-((float)i / (float)blendZone);
+
+            for (int j = 0; j < height; j++) {
+                int colorA = c.getPixel(i + c.getWidth() / 2 - blendZone / 2, j);
+                int colorB = s.getPixel(i + s.getWidth() / 2 - blendZone / 2, j);
+
+                int red = (int)(Color.red(colorA)*ratio + Color.red(colorB)*(1-ratio));
+                int green = (int)(Color.green(colorA)*ratio + Color.green(colorB)*(1-ratio));
+                int blue = (int)(Color.blue(colorA)*ratio + Color.blue(colorB)*(1-ratio));
+                int alpha = (int)(Color.alpha(colorA)*ratio + Color.alpha(colorB)*(1-ratio));
+
+                blend.setPixel(i, j, Color.argb(alpha, red, green, blue));
+            }
+        }
+
+        comboImage.drawBitmap(blend, c.getWidth() / 2 - blendZone / 2, 0, null);
 
         return cs;
     }
@@ -248,7 +273,7 @@ public class ImageViewer extends Activity {
     private Bitmap getBitmap() {
 
 
-        Log.i(MainActivity.TAG, currentCommand +"");
+        Log.i(MainActivity.TAG, currentCommand + "");
 
         if (currentCommand == 3 && splitImageA != null)
             return Bitmap.createScaledBitmap(splitImageA, 1000, (int) (1000f / ((float) splitImageA.getWidth() / (float) splitImageA.getHeight())), false);
