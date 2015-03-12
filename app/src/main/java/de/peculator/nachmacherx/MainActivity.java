@@ -55,10 +55,9 @@ public class MainActivity extends FragmentActivity {
 
         myPrefs = new Preferences(getApplicationContext());
         myPrefs.loadLastPreferences();
-        Log.i(TAG, myPrefs.toString());
 
         //set default Settings
-        //setDefaultSettings();
+        setDefaultSettings();
 
 
         if (savedInstanceState == null) {
@@ -198,7 +197,6 @@ public class MainActivity extends FragmentActivity {
         @Override
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
             super.onActivityResult(requestCode, resultCode, data);
-            Log.d(MainActivity.TAG, "On Activity Result");
             changeLayout();
 
             if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
@@ -312,7 +310,6 @@ public class MainActivity extends FragmentActivity {
                     }
                 } else {
                     if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                        Log.d(MainActivity.TAG, "Nothing to do");
                         //myBitmapResult = rotateImage(myBitmapResult, 0, false, myPrefs.getLastURLResult(), false);
                     } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                         myBitmapResult = rotateImage(myBitmapResult, 90, false, myPrefs.getLastURLResult(), false);
@@ -323,7 +320,6 @@ public class MainActivity extends FragmentActivity {
                 myImageViewResult.setImageBitmap(myBitmapResult);
             }
 
-            Log.d(MainActivity.TAG, "On Activity Result finished");
             changeLayout();
         }
 
@@ -437,7 +433,6 @@ public class MainActivity extends FragmentActivity {
 
         public Bitmap rotateImage(Bitmap bitmap, float value, boolean isMirrored, String path, boolean special) {
             if (bitmap != null) {
-                Log.i(TAG, "rotating");
                 // create new matrix object
                 Matrix matrix = new Matrix();
 
@@ -462,7 +457,6 @@ public class MainActivity extends FragmentActivity {
             } else {
                 Toast.makeText(getActivity(), getResources().getString(R.string.noImageFound), Toast.LENGTH_SHORT).show();
             }
-            Log.i(TAG, "rotating finished");
 
             return bitmap;
         }
@@ -488,7 +482,7 @@ public class MainActivity extends FragmentActivity {
 
                 File pictureFile = new File(path);
                 if (pictureFile == null) {
-                    Log.d(MainActivity.TAG, "Error creating media file, check storage permissions: ");
+                    Log.d(MainActivity.TAG, "Error creating media file ");
                     return null;
                 }
 
@@ -513,7 +507,7 @@ public class MainActivity extends FragmentActivity {
                 super.onPostExecute(aVoid);
                 MainActivity.inProcess--;
                 Log.d(MainActivity.TAG, "Finished storing " + MainActivity.inProcess);
-                Toast.makeText(getActivity(), getResources().getString(R.string.finishedStoring), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), getResources().getString(R.string.imageStored), Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -527,7 +521,6 @@ public class MainActivity extends FragmentActivity {
             // check orientation and change it
             changeLayout();
             myImageView = (ImageView) rootView.findViewById(R.id.imageView);
-            Log.i(TAG, myImageView.getWidth() + "");
             myImageViewResult = (ImageView) rootView.findViewById(R.id.newImageView);
 
             myImageView.setOnClickListener(new View.OnClickListener() {

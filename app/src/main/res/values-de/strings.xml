@@ -26,13 +26,16 @@
     <string name="settingsMirror">Quell-Bild spiegeln</string>
     <string name="settingsMirrorResult">Ergebnis-Bild spiegeln</string>
     <string name="modifyImage">Bild modifizieren</string>
+
     <string name="rotateR">Nach rechts drehen</string>
     <string name="rotateL">Nach links drehen</string>
     <string name="mirrorH">Horizontal spiegeln</string>
     <string name="mirrorV">Vertikal spiegeln</string>
+
     <string name="noImageFound">Kein Bild ausgewählt!</string>
 
     <string name="imageStored">Bild gespeichert</string>
     <string name="imageAdded">Bild zur Galerie hinzugefügt</string>
+    <string name="inprocess">Im Moment werden noch Bilder gespeichert. Bitte warten.</string>
 
 </resources>

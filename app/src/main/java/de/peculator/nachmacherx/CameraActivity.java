@@ -360,13 +360,11 @@ public class CameraActivity extends Activity implements Camera.PictureCallback {
                         parameters.getSupportedPictureSizes().get(i).height == ops.outHeight ||
                         parameters.getSupportedPictureSizes().get(i).width == ops.outHeight &&
                                 parameters.getSupportedPictureSizes().get(i).height == ops.outWidth ) {
-                    Log.i(MainActivity.TAG, "Same Size:" +parameters.getSupportedPictureSizes().get(i).width + ":" + parameters.getSupportedPictureSizes().get(i).height);
                     return parameters.getSupportedPictureSizes().get(i);
                 }
             }
 
         }
-        Log.i(MainActivity.TAG, parameters.getSupportedPictureSizes().get(0).width + ":" + parameters.getSupportedPictureSizes().get(0).height);
         return parameters.getSupportedPictureSizes().get(0);
     }
 
@@ -481,8 +479,6 @@ public class CameraActivity extends Activity implements Camera.PictureCallback {
         } catch (IOException e) {
             Log.d(MainActivity.TAG, "Error accessing file: " + e.getMessage());
         }
-
-        Log.d(MainActivity.TAG, "Stream finished");
 
         addImageToGallery(pictureFile.getPath(), getApplicationContext());
         setResult(pictureFile.getPath());

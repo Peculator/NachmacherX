@@ -8,7 +8,7 @@ import android.view.View;
 import java.util.ArrayList;
 
 /**
- * Created by sven on 02.03.15.
+ * Created by peculator
  */
 public class Utils {
     public static boolean hasImageCaptureBug() {
@@ -63,8 +63,6 @@ public class Utils {
             final int halfHeight = height / 2;
             final int halfWidth = width / 2;
 
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
             while ((halfHeight / inSampleSize) > reqHeight
                     && (halfWidth / inSampleSize) > reqWidth) {
                 inSampleSize *= 2;
@@ -72,7 +70,6 @@ public class Utils {
             }
         }
 
-        Log.i(MainActivity.TAG, "Samplesize: " + inSampleSize + " -" + reqWidth + " _ " + reqHeight);
         return inSampleSize;
     }
 }

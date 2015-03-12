@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">NachmacherX</string>
+    <string name="fromGallery">Wybierz zdjęcie z galerii</string>
+
+    <string name="startText">Rozpocząć</string>
+    <string name="startAgainText">Spróbuj ponownie</string>
+
+    <string name="settingsOpenG">Idź do galerii</string>
+    <string name="settingsRotate">Źródło zdjęcia obrócić</string>
+    <string name="settingsRotateResult">Rezultat zdjęcia obrócić</string>
+    <string name="settingsOpenBrowser">Google zdjęcia szukać</string>
+
+    <string name="camera_alpha">Zmień widoczność</string>
+    <string name="camera_rotate">Górne zdjecie obrócić</string>
+    <string name="camera_switch">Wymiana aparatu</string>
+    <string name="camera_capture">Zrób zdjęcie</string>
+
+    <string name="ok">OK</string>
+    <string name="cancel">Przerwać</string>
+
+    <string name="saveImage">Zdjęcie zabezpieczyć</string>
+    <string name="save">zabezpieczyć</string>
+    <string name="button_photo">Zrób nowe zdjęcie</string>
+    <string name="settingsMirror">Przerzuć źródło zdjęcia</string>
+    <string name="settingsMirrorResult">Przerzuć rezultat zdjęcia</string>
+    <string name="modifyImage">Modyfikacja zdjęcia</string>
+
+    <string name="rotateR">Obróć w prawo</string>
+    <string name="rotateL">Obróć w lewo</string>
+    <string name="mirrorH">Przerzuć w poziomie</string>
+    <string name="mirrorV">Przerzuć w pionie</string>
+
+    <string name="noImageFound">Nie wybrano zdjęcia!</string>
+
+    <string name="imageStored">Przechowywać zdjęcie</string>
+    <string name="imageAdded">Zdjęcie zostało dodane do galerii</string>
+    <string name="inprocess">W tej chwili, zdjęcia są zapisywane. Proszę czekać.</string>
+
+</resources>

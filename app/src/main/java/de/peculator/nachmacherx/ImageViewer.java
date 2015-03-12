@@ -112,12 +112,12 @@ public class ImageViewer extends Activity {
 
                 @Override
                 public void onSwipeUp() {
-                    Log.i(MainActivity.TAG, "up");
+                    Log.d(MainActivity.TAG, "up");
                 }
 
                 @Override
                 public void onSwipeDown() {
-                    Log.i(MainActivity.TAG, "down");
+                    Log.d(MainActivity.TAG, "down");
                 }
 
             });
@@ -179,7 +179,6 @@ public class ImageViewer extends Activity {
 
         splitImageA = combineImages(bitmapA, bitmapB);
         splitImageB = combineImages(bitmapB, bitmapA);
-        Log.i(MainActivity.TAG, "combined");
     }
 
     public Bitmap combineImages(Bitmap c, Bitmap s) { // can add a 3rd parameter 'String loc' if you want to save the new image - left some code to do that at the bottom
@@ -197,7 +196,6 @@ public class ImageViewer extends Activity {
             s = Bitmap.createScaledBitmap(s, (int) (s.getWidth() * (float) c.getHeight() / (float) s.getHeight()), c.getHeight(), false);
             yOffset = (c.getHeight() - s.getHeight()) / 2;
         }
-        Log.i(MainActivity.TAG, c.getWidth() + " -(2)- " + s.getWidth() + " : " + c.getWidth() * (s.getHeight() / c.getHeight()));
 
         int width = c.getWidth() / 2 + s.getWidth() / 2;
         int height = (c.getHeight() >= s.getHeight()) ? c.getHeight() : s.getHeight();
@@ -273,8 +271,6 @@ public class ImageViewer extends Activity {
     private Bitmap getBitmap() {
 
 
-        Log.i(MainActivity.TAG, currentCommand + "");
-
         if (currentCommand == 3 && splitImageA != null)
             return Bitmap.createScaledBitmap(splitImageA, 1000, (int) (1000f / ((float) splitImageA.getWidth() / (float) splitImageA.getHeight())), false);
         if (currentCommand == 4 && splitImageB != null)
@@ -306,7 +302,6 @@ public class ImageViewer extends Activity {
 
     private void nextImage() {
         currentCommand = (currentCommand == 4) ? 1 : currentCommand + 1;
-        Log.i(MainActivity.TAG, " " + currentCommand);
 
         doAnimation();
     }
@@ -325,7 +320,6 @@ public class ImageViewer extends Activity {
 
     private void prevImage() {
         currentCommand = (currentCommand == 1) ? 4 : currentCommand - 1;
-        Log.i(MainActivity.TAG, " " + currentCommand);
 
         doAnimation();
     }
