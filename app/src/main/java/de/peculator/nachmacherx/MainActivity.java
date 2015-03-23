@@ -94,15 +94,19 @@ public class MainActivity extends FragmentActivity {
             openGallery();
         }
         if (id == R.id.action_openBrowser) {
-            openBrowser();
+            openBrowser(0);
+        }
+        if (id == R.id.action_openBrowserWiki) {
+            openBrowser(1);
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void openBrowser() {
+    private void openBrowser(int modus) {
 
-        String url = "https://images.google.de";
+        String url = (modus == 0) ? "https://images.google.de" : "http://commons.wikimedia.org/wiki/Main_Page";
+
         Intent i = new Intent(Intent.ACTION_VIEW);
         i.setType("image/*");
         i.setData(Uri.parse(url));
@@ -527,12 +531,12 @@ public class MainActivity extends FragmentActivity {
                 @Override
                 public void onClick(View v) {
                     if (myBitmap != null) {
-                        if(MainActivity.inProcess == 0 || myBitmapResult==null) {
+                        if (MainActivity.inProcess == 0 || myBitmapResult == null) {
                             Intent i = new Intent(getActivity(), ImageViewer.class);
                             i.putExtra("path", 1);
                             startActivity(i);
-                        }else{
-                            Toast.makeText(getActivity(),getString(R.string.inprocess)+":"+MainActivity.inProcess,Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(getActivity(), getString(R.string.inprocess) + ":" + MainActivity.inProcess, Toast.LENGTH_LONG).show();
                         }
                     }
                 }
@@ -541,7 +545,7 @@ public class MainActivity extends FragmentActivity {
             myImageView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    if(myBitmap!=null) {
+                    if (myBitmap != null) {
                         if (MainActivity.inProcess == 0) {
                             showModifyDialog(0);
                         } else {
@@ -555,13 +559,12 @@ public class MainActivity extends FragmentActivity {
             myImageViewResult.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (myPrefs.getLastURLResult() != "" && myBitmapResult!=null ) {
-                        if(MainActivity.inProcess == 0 || myBitmapResult==null) {
+                    if (myPrefs.getLastURLResult() != "" && myBitmapResult != null) {
+                        if (MainActivity.inProcess == 0 || myBitmapResult == null) {
                             Intent i = new Intent(getActivity(), ImageViewer.class);
                             i.putExtra("path", 2);
                             startActivity(i);
-                        }
-                        else {
+                        } else {
                             Toast.makeText(getActivity(), getString(R.string.inprocess) + ":" + MainActivity.inProcess, Toast.LENGTH_LONG).show();
                         }
                     }
@@ -571,7 +574,7 @@ public class MainActivity extends FragmentActivity {
             myImageViewResult.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    if(myBitmapResult!=null) {
+                    if (myBitmapResult != null) {
                         if (MainActivity.inProcess == 0) {
                             showModifyDialog(1);
                         } else {

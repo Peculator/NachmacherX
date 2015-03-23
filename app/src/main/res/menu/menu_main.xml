@@ -6,6 +6,8 @@
         android:orderInCategory="100" app:showAsAction="collapseActionView"/>
     <item android:id="@+id/action_openBrowser" android:title="@string/settingsOpenBrowser"
         android:orderInCategory="100" app:showAsAction="collapseActionView"/>
+    <item android:id="@+id/action_openBrowserWiki" android:title="@string/settingsOpenBrowserWiki"
+        android:orderInCategory="100" app:showAsAction="collapseActionView"/>
     <item android:id="@+id/action_rotate" android:title="@string/settingsRotate"
         android:orderInCategory="100" app:showAsAction="collapseActionView" />
     <item android:id="@+id/action_mirror" android:title="@string/settingsMirror"

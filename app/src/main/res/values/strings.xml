@@ -11,6 +11,7 @@
     <string name="settingsRotate">Rotate Source Image</string>
     <string name="settingsRotateResult">Rotate Result Image</string>
     <string name="settingsOpenBrowser">Google Image Search</string>
+    <string name="settingsOpenBrowserWiki">Wiki Commons</string>
 
     <string name="camera_alpha">Visibility of the Overlay Image</string>
     <string name="camera_rotate">Rotate the Overlay Image</string>

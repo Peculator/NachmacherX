@@ -11,6 +11,7 @@
     <string name="settingsRotate">Źródło zdjęcia obrócić</string>
     <string name="settingsRotateResult">Rezultat zdjęcia obrócić</string>
     <string name="settingsOpenBrowser">Google zdjęcia szukać</string>
+    <string name="settingsOpenBrowserWiki">Wiki Commons</string>
 
     <string name="camera_alpha">Zmień widoczność</string>
     <string name="camera_rotate">Górne zdjecie obrócić</string>

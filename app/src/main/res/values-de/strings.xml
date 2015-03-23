@@ -11,6 +11,7 @@
     <string name="settingsRotate">Quell-Bild drehen</string>
     <string name="settingsRotateResult">Ergebnis-Bild drehen</string>
     <string name="settingsOpenBrowser">Google Bilder Suche</string>
+    <string name="settingsOpenBrowserWiki">Wiki Commons</string>
 
     <string name="camera_alpha">Sichtbarkeit des überlagernden Bildes ändern</string>
     <string name="camera_rotate">Überlagerndes Bild drehen</string>
