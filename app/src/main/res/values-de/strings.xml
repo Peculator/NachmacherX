@@ -38,5 +38,10 @@
     <string name="imageStored">Bild gespeichert</string>
     <string name="imageAdded">Bild zur Galerie hinzugefügt</string>
     <string name="inprocess">Im Moment werden noch Bilder gespeichert. Bitte warten.</string>
+    <string name="settingsOpenInstructions">Anleitung</string>
+
+    <string name="stepOne">Schritt Eins: Wähle ein Bild oder erstelle ein neues, welches du nachmachen möchtest (BLAU).</string>
+    <string name="stepTwo">\n\nSchritt Zwei: Starte das Nachmachen (ROT).</string>
+    <string name="stepThree">\n\nSchritt Drei: Betrachte die Ergebnisse und klicke auf eines der kombinierten Bilder, um es zu speichern.</string>
 
 </resources>

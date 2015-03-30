@@ -38,5 +38,10 @@
     <string name="imageStored">Image stored</string>
     <string name="imageAdded">Image added to gallery</string>
     <string name="inprocess">Currently, storing processes are still in process. Please wait.</string>
+    <string name="settingsOpenInstructions">Manual</string>
+
+    <string name="stepOne">Step One: Select an image or create a new one, which you want to imitate (BLUE).</string>
+    <string name="stepTwo">\n\nStep Two: Start imitation (RED).</string>
+    <string name="stepThree">\n\nStep Three: Watch the results and click on a combined image to store it.</string>
 
 </resources>

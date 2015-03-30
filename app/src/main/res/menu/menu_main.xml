@@ -8,14 +8,16 @@
         android:orderInCategory="100" app:showAsAction="collapseActionView"/>
     <item android:id="@+id/action_openBrowserWiki" android:title="@string/settingsOpenBrowserWiki"
         android:orderInCategory="100" app:showAsAction="collapseActionView"/>
-    <item android:id="@+id/action_rotate" android:title="@string/settingsRotate"
+    <item android:id="@+id/action_openInstructions" android:title="@string/settingsOpenInstructions"
+        android:orderInCategory="100" app:showAsAction="collapseActionView"/>
+    <!--item android:id="@+id/action_rotate" android:title="@string/settingsRotate"
         android:orderInCategory="100" app:showAsAction="collapseActionView" />
     <item android:id="@+id/action_mirror" android:title="@string/settingsMirror"
         android:orderInCategory="100" app:showAsAction="collapseActionView" />
     <item android:id="@+id/action_rotate_result" android:title="@string/settingsRotateResult"
         android:orderInCategory="100" app:showAsAction="collapseActionView" />
     <item android:id="@+id/action_mirror_result" android:title="@string/settingsMirrorResult"
-        android:orderInCategory="100" app:showAsAction="collapseActionView" />
+        android:orderInCategory="100" app:showAsAction="collapseActionView" /-->
 
 
 </menu>

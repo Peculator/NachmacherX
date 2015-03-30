@@ -19,6 +19,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
@@ -37,6 +38,7 @@ public class ImageViewer extends Activity {
     private Bitmap splitImageB;
     private Bitmap bitmapA;
     private Bitmap bitmapB;
+    private TextView tv;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,6 +61,8 @@ public class ImageViewer extends Activity {
             }
 
         });
+
+        tv = (TextView) findViewById(R.id.numImageView);
 
         currentCommand = getIntent().getIntExtra("path", 1);
 
@@ -319,6 +323,11 @@ public class ImageViewer extends Activity {
 
         Drawable drawable = new BitmapDrawable(getBitmap());
         view.setImageDrawable(drawable);
+
+        int all = 1;
+        if(hasTwoImages())
+            all = 4;
+        tv.setText(currentCommand + " / " + all);
     }
 
     private void prevImage() {

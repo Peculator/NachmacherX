@@ -8,9 +8,11 @@ ADDED from AndroidManifest.xml:2:1
 		INJECTED from AndroidManifest.xml:0:0
 		INJECTED from AndroidManifest.xml:0:0
 	android:versionName
+		ADDED from AndroidManifest.xml:4:5
 		INJECTED from AndroidManifest.xml:0:0
 		INJECTED from AndroidManifest.xml:0:0
 	android:versionCode
+		ADDED from AndroidManifest.xml:3:40
 		INJECTED from AndroidManifest.xml:0:0
 		INJECTED from AndroidManifest.xml:0:0
 uses-sdk
@@ -29,77 +31,89 @@ uses-permission#android.permission.CAMERA
 ADDED from AndroidManifest.xml:11:5
 	android:name
 		ADDED from AndroidManifest.xml:11:22
-uses-feature#android.hardware.camera
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
 ADDED from AndroidManifest.xml:12:5
 	android:name
-		ADDED from AndroidManifest.xml:12:19
-uses-feature#android.hardware.camera.front
-ADDED from AndroidManifest.xml:13:5
-	android:required
-		ADDED from AndroidManifest.xml:13:64
-	android:name
-		ADDED from AndroidManifest.xml:13:19
-uses-feature#android.hardware.camera.autofocus
+		ADDED from AndroidManifest.xml:12:22
+uses-feature#android.hardware.camera
 ADDED from AndroidManifest.xml:14:5
 	android:required
-		ADDED from AndroidManifest.xml:14:68
+		ADDED from AndroidManifest.xml:14:58
 	android:name
 		ADDED from AndroidManifest.xml:14:19
-uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+uses-feature#android.hardware.camera.front
 ADDED from AndroidManifest.xml:15:5
+	android:required
+		ADDED from AndroidManifest.xml:15:64
 	android:name
-		ADDED from AndroidManifest.xml:15:22
-uses-feature#android.hardware.camera.setParameters
+		ADDED from AndroidManifest.xml:15:19
+uses-feature#android.hardware.camera.autofocus
 ADDED from AndroidManifest.xml:16:5
+	android:required
+		ADDED from AndroidManifest.xml:16:68
 	android:name
 		ADDED from AndroidManifest.xml:16:19
 application
-ADDED from AndroidManifest.xml:18:5
+ADDED from AndroidManifest.xml:19:5
 MERGED from com.android.support:appcompat-v7:21.0.3:16:5
 MERGED from com.android.support:support-v4:21.0.3:16:5
 	android:label
-		ADDED from AndroidManifest.xml:21:9
-	android:allowBackup
-		ADDED from AndroidManifest.xml:19:9
-	android:icon
-		ADDED from AndroidManifest.xml:20:9
-	android:theme
 		ADDED from AndroidManifest.xml:22:9
-	android:largeHeap
+	android:allowBackup
+		ADDED from AndroidManifest.xml:20:9
+	android:icon
+		ADDED from AndroidManifest.xml:21:9
+	android:theme
 		ADDED from AndroidManifest.xml:23:9
+	android:largeHeap
+		ADDED from AndroidManifest.xml:24:9
 activity#de.peculator.nachmacherx.MainActivity
-ADDED from AndroidManifest.xml:26:9
+ADDED from AndroidManifest.xml:27:9
 	android:label
-		ADDED from AndroidManifest.xml:28:13
-	android:configChanges
 		ADDED from AndroidManifest.xml:29:13
+	android:configChanges
+		ADDED from AndroidManifest.xml:30:13
 	android:name
-		ADDED from AndroidManifest.xml:27:13
+		ADDED from AndroidManifest.xml:28:13
 intent-filter#android.intent.action.MAIN+android.intent.category.LAUNCHER
-ADDED from AndroidManifest.xml:30:13
+ADDED from AndroidManifest.xml:31:13
 action#android.intent.action.MAIN
-ADDED from AndroidManifest.xml:31:17
+ADDED from AndroidManifest.xml:32:17
 	android:name
-		ADDED from AndroidManifest.xml:31:25
+		ADDED from AndroidManifest.xml:32:25
 category#android.intent.category.LAUNCHER
-ADDED from AndroidManifest.xml:33:17
+ADDED from AndroidManifest.xml:34:17
 	android:name
-		ADDED from AndroidManifest.xml:33:27
+		ADDED from AndroidManifest.xml:34:27
 activity#de.peculator.nachmacherx.CameraActivity
-ADDED from AndroidManifest.xml:37:9
+ADDED from AndroidManifest.xml:38:9
 	android:screenOrientation
-		ADDED from AndroidManifest.xml:39:13
-	android:configChanges
-		ADDED from AndroidManifest.xml:41:13
-	android:theme
 		ADDED from AndroidManifest.xml:40:13
-	android:name
-		ADDED from AndroidManifest.xml:38:13
-activity#de.peculator.nachmacherx.ImageViewer
-ADDED from AndroidManifest.xml:43:9
 	android:configChanges
-		ADDED from AndroidManifest.xml:46:13
+		ADDED from AndroidManifest.xml:42:13
 	android:theme
-		ADDED from AndroidManifest.xml:45:13
+		ADDED from AndroidManifest.xml:41:13
 	android:name
-		ADDED from AndroidManifest.xml:44:13
+		ADDED from AndroidManifest.xml:39:13
+activity#de.peculator.nachmacherx.ImageViewer
+ADDED from AndroidManifest.xml:44:9
+	android:configChanges
+		ADDED from AndroidManifest.xml:47:13
+	android:theme
+		ADDED from AndroidManifest.xml:46:13
+	android:name
+		ADDED from AndroidManifest.xml:45:13
+supports-screens
+ADDED from AndroidManifest.xml:50:5
+	android:resizeable
+		ADDED from AndroidManifest.xml:54:9
+	android:largeScreens
+		ADDED from AndroidManifest.xml:52:9
+	android:anyDensity
+		ADDED from AndroidManifest.xml:51:9
+	android:normalScreens
+		ADDED from AndroidManifest.xml:53:9
+	android:xlargeScreens
+		ADDED from AndroidManifest.xml:56:9
+	android:smallScreens
+		ADDED from AndroidManifest.xml:55:9
