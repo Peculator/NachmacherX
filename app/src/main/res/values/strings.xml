@@ -44,4 +44,8 @@
     <string name="stepTwo">\n\nStep Two: Start imitation (RED).</string>
     <string name="stepThree">\n\nStep Three: Watch the results and click on a combined image to store it.</string>
 
+    <string name="play">Play</string>
+    <string name="firstImage">First image</string>
+    <string name="secondImage">Second image</string>
+
 </resources>

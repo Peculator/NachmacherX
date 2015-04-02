@@ -69,7 +69,8 @@
                 android:layout_margin="1px"
                 android:background="@drawable/border_blue"
                 android:padding="5dp"
-                android:layout_weight="4" />
+                android:layout_weight="4"
+                android:contentDescription="@string/firstImage" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -85,19 +86,24 @@
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/ic_media_play"
                     android:id="@+id/playOne"
-                    android:enabled="false" />
+                    style="@style/selected"
+                    android:longClickable="true"
+                    android:contentDescription="@string/play" />
 
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/ic_menu_preferences"
-                    android:id="@+id/prefOne" />
+                    android:id="@+id/prefOne"
+                    android:longClickable="true"
+                    android:contentDescription="@string/modifyImage" />
 
                 <ProgressBar
-                    style="?android:attr/progressBarStyleSmall"
+                    style="?android:attr/progressBarStyleLarge"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/progressBarOne"  android:visibility="invisible"/>
+                    android:id="@+id/progressBarOne"
+                    android:visibility="invisible" />
 
 
             </LinearLayout>
@@ -121,7 +127,8 @@
                 android:layout_margin="1px"
                 android:background="@drawable/border_red"
                 android:padding="5dp"
-                android:layout_weight="4" />
+                android:layout_weight="4"
+                android:contentDescription="@string/secondImage" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -136,19 +143,24 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/ic_media_play"
-                    android:id="@+id/playTwo" />
+                    android:id="@+id/playTwo"
+                    android:longClickable="true"
+                    android:contentDescription="@string/play" />
 
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/ic_menu_preferences"
-                    android:id="@+id/prefTwo" />
+                    android:id="@+id/prefTwo"
+                    android:longClickable="true"
+                    android:contentDescription="@string/modifyImage" />
 
                 <ProgressBar
-                    style="?android:attr/progressBarStyleSmall"
+                    style="?android:attr/progressBarStyleLarge"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/progressBarTwo" android:visibility="invisible" />
+                    android:id="@+id/progressBarTwo"
+                    android:visibility="invisible" />
 
             </LinearLayout>
 

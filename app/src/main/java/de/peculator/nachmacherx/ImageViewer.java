@@ -67,7 +67,7 @@ public class ImageViewer extends Activity {
         currentCommand = getIntent().getIntExtra("path", 1);
 
         String path = getImagePath(1);
-        if (path != "" && path != null) {
+        if (!path.equals("") && path != null) {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
 
@@ -81,7 +81,8 @@ public class ImageViewer extends Activity {
         }
 
         path = getImagePath(2);
-        if (path != "" && path != null) {
+
+        if (!path.equals("") && path != null) {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
 
@@ -268,10 +269,8 @@ public class ImageViewer extends Activity {
     }
 
     private boolean hasTwoImages() {
-        if (MainActivity.myPrefs.getLastURLResult() != "" && new File(MainActivity.myPrefs.getLastURLResult()).exists()
-                && MainActivity.myPrefs.getLastURLSource() != "" && new File(MainActivity.myPrefs.getLastURLSource()).exists())
-            return true;
-        return false;
+        return !MainActivity.myPrefs.getLastURLResult().equals("")&& new File(MainActivity.myPrefs.getLastURLResult()).exists()
+                && !MainActivity.myPrefs.getLastURLSource().equals("") && new File(MainActivity.myPrefs.getLastURLSource()).exists();
     }
 
 
@@ -304,7 +303,7 @@ public class ImageViewer extends Activity {
         if (new File(path).exists())
             return path;
         else
-            return null;
+            return "";
     }
 
     private void nextImage() {

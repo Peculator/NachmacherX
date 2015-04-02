@@ -14,7 +14,7 @@ public class Utils {
     public static boolean hasImageCaptureBug() {
 
         // list of known devices that have the bug
-        ArrayList<String> devices = new ArrayList<String>();
+        ArrayList<String> devices = new ArrayList<>();
         devices.add("android-devphone1/dream_devphone/dream");
         devices.add("generic/sdk/generic");
         devices.add("vodafone/vfpioneer/sapphire");

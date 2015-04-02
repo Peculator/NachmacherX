@@ -27,7 +27,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.io.File;
@@ -71,7 +70,7 @@ public class MainActivity extends FragmentActivity {
 
     private void setDefaultSettings() {
         myPrefs.setLastURLResult("");
-        //myPrefs.setLastURLSource("");
+        myPrefs.setLastURLSource("");
         //myPrefs.setLastAlpha(0);
         myPrefs.storePreferences();
     }
@@ -152,20 +151,7 @@ public class MainActivity extends FragmentActivity {
             // as you specify a parent activity in AndroidManifest.xml.
             int id = item.getItemId();
 
-           /* if (id == R.id.action_rotate) {
-                rotateImageSource(false);
-            }
-            if (id == R.id.action_rotate_result) {
-                rotateImageResult(false);
-            }
-            if (id == R.id.action_mirror) {
-                mirrorImageSource(false);
-            }
-            if (id == R.id.action_mirror_result) {
-                mirrorImageResult(false);
-            }*/
-
-            if(id == R.id.action_openInstructions){
+            if (id == R.id.action_openInstructions) {
                 showInstructions();
             }
 
@@ -175,7 +161,7 @@ public class MainActivity extends FragmentActivity {
 
         private void showInstructions() {
 
-            String message = getString(R.string.stepOne)+getString(R.string.stepTwo)+getString(R.string.stepThree);
+            String message = getString(R.string.stepOne) + getString(R.string.stepTwo) + getString(R.string.stepThree);
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle(getString(R.string.settingsOpenInstructions)).setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
@@ -225,6 +211,7 @@ public class MainActivity extends FragmentActivity {
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
             super.onActivityResult(requestCode, resultCode, data);
             changeLayout();
+
 
             if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
                 Uri selectedImage = data.getData();
@@ -331,15 +318,15 @@ public class MainActivity extends FragmentActivity {
 
                 if (myPrefs.isFrontCamera()) {
                     if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                        myBitmapResult = rotateImage(1,myBitmapResult, 0, true, myPrefs.getLastURLResult(), false);
+                        myBitmapResult = rotateImage(1, myBitmapResult, 0, true, myPrefs.getLastURLResult(), false);
                     } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                        myBitmapResult = rotateImage(1,myBitmapResult, 270, true, myPrefs.getLastURLResult(), false);
+                        myBitmapResult = rotateImage(1, myBitmapResult, 270, true, myPrefs.getLastURLResult(), false);
                     }
                 } else {
                     if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                         //myBitmapResult = rotateImage(myBitmapResult, 0, false, myPrefs.getLastURLResult(), false);
                     } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                        myBitmapResult = rotateImage(1,myBitmapResult, 90, false, myPrefs.getLastURLResult(), false);
+                        myBitmapResult = rotateImage(1, myBitmapResult, 90, false, myPrefs.getLastURLResult(), false);
                     }
                 }
 
@@ -433,32 +420,32 @@ public class MainActivity extends FragmentActivity {
 
         public void rotateImageSource(boolean special) {
 
-            myBitmap = rotateImage(0,myBitmap, 90, false, myPrefs.getLastURLSource(), special);
+            myBitmap = rotateImage(0, myBitmap, 90, false, myPrefs.getLastURLSource(), special);
 
             myImageView.setImageBitmap(myBitmap);
             MainActivity.overlay = myBitmap;
         }
 
         public void rotateImageResult(boolean special) {
-            myBitmapResult = rotateImage(1,myBitmapResult, 90, false, myPrefs.getLastURLResult(), special);
+            myBitmapResult = rotateImage(1, myBitmapResult, 90, false, myPrefs.getLastURLResult(), special);
 
             myImageViewResult.setImageBitmap(myBitmapResult);
         }
 
         public void mirrorImageSource(boolean special) {
-            myBitmap = rotateImage(0,myBitmap, 0, true, myPrefs.getLastURLSource(), special);
+            myBitmap = rotateImage(0, myBitmap, 0, true, myPrefs.getLastURLSource(), special);
 
             myImageView.setImageBitmap(myBitmap);
             MainActivity.overlay = myBitmap;
         }
 
         public void mirrorImageResult(boolean special) {
-            myBitmapResult = rotateImage(1,myBitmapResult, 0, true, myPrefs.getLastURLResult(), special);
+            myBitmapResult = rotateImage(1, myBitmapResult, 0, true, myPrefs.getLastURLResult(), special);
 
             myImageViewResult.setImageBitmap(myBitmapResult);
         }
 
-        public Bitmap rotateImage(int num,Bitmap bitmap, float value, boolean isMirrored, String path, boolean special) {
+        public Bitmap rotateImage(int num, Bitmap bitmap, float value, boolean isMirrored, String path, boolean special) {
             if (bitmap != null) {
                 // create new matrix object
                 Matrix matrix = new Matrix();
@@ -477,7 +464,7 @@ public class MainActivity extends FragmentActivity {
                         matrix, true);
 
                 if (path != null) {
-                    StoreBitmapTask async = new StoreBitmapTask(matrix, path,num);
+                    StoreBitmapTask async = new StoreBitmapTask(matrix, path, num);
                     MainActivity.inProcess++;
                     disableButtons();
                     async.execute();
@@ -541,8 +528,8 @@ public class MainActivity extends FragmentActivity {
                 this.path = path;
                 this.num = num;
 
-                int which = (num==0)?R.id.progressBarOne:R.id.progressBarTwo;
-                pb = (ProgressBar)rootView.findViewById(which);
+                int which = (num == 0) ? R.id.progressBarOne : R.id.progressBarTwo;
+                pb = (ProgressBar) rootView.findViewById(which);
                 pb.setProgress(1);
                 pb.setVisibility(View.VISIBLE);
             }
@@ -559,7 +546,7 @@ public class MainActivity extends FragmentActivity {
                         matrix, true);
 
                 File pictureFile = new File(path);
-                if (pictureFile == null) {
+                if (!pictureFile.exists()) {
                     Log.d(MainActivity.TAG, "Error creating media file ");
                     return null;
                 }
@@ -613,14 +600,51 @@ public class MainActivity extends FragmentActivity {
                 @Override
                 public void onClick(View v) {
                     if (myBitmap != null) {
-                        if (MainActivity.inProcess == 0 || myBitmapResult == null) {
-                            Intent i = new Intent(getActivity(), ImageViewer.class);
-                            i.putExtra("path", 1);
-                            startActivity(i);
+                        if (MainActivity.inProcess == 0) {
+                            startViewer(1);
+
                         } else {
                             Toast.makeText(getActivity(), getString(R.string.inprocess) + ":" + MainActivity.inProcess, Toast.LENGTH_LONG).show();
                         }
                     }
+                }
+
+
+            });
+
+            myFirstImagePlayButton.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Toast.makeText(getActivity(), getString(R.string.play), Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+            });
+
+            myImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (myBitmap != null) {
+                        if (MainActivity.inProcess == 0) {
+                            startViewer(1);
+
+                        } else {
+                            Toast.makeText(getActivity(), getString(R.string.inprocess) + ":" + MainActivity.inProcess, Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
+            });
+
+            myImageView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if (myBitmap != null) {
+                        if (MainActivity.inProcess == 0) {
+                            showModifyDialog(0);
+                        } else {
+                            Toast.makeText(getActivity(), getString(R.string.inprocess) + ":" + MainActivity.inProcess, Toast.LENGTH_LONG).show();
+                        }
+                    }
+                    return true;
                 }
             });
 
@@ -637,21 +661,62 @@ public class MainActivity extends FragmentActivity {
                 }
             });
 
+            myFirstImagePrefsButton.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Toast.makeText(getActivity(), getString(R.string.modifyImage), Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+            });
+
             Button mySecondImagePlayButton = (Button) rootView.findViewById(R.id.playTwo);
             Button mySecondImagePrefsButton = (Button) rootView.findViewById(R.id.prefTwo);
 
             mySecondImagePlayButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (myPrefs.getLastURLResult() != "" && myBitmapResult != null) {
-                        if (MainActivity.inProcess == 0 || myBitmapResult == null) {
-                            Intent i = new Intent(getActivity(), ImageViewer.class);
-                            i.putExtra("path", 2);
-                            startActivity(i);
+                    if (!myPrefs.getLastURLResult().equals("") && myBitmapResult != null) {
+                        if (MainActivity.inProcess == 0) {
+                            startViewer(2);
                         } else {
                             Toast.makeText(getActivity(), getString(R.string.inprocess) + ":" + MainActivity.inProcess, Toast.LENGTH_LONG).show();
                         }
                     }
+                }
+            });
+            mySecondImagePlayButton.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Toast.makeText(getActivity(), getString(R.string.play), Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+            });
+
+            myImageViewResult.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (myBitmapResult != null && !myPrefs.getLastURLResult().equals("") ) {
+                        if (MainActivity.inProcess == 0) {
+                            startViewer(2);
+
+                        } else {
+                            Toast.makeText(getActivity(), getString(R.string.inprocess) + ":" + MainActivity.inProcess, Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
+            });
+
+            myImageViewResult.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if (myBitmapResult != null) {
+                        if (MainActivity.inProcess == 0) {
+                            showModifyDialog(1);
+                        } else {
+                            Toast.makeText(getActivity(), getString(R.string.inprocess) + ":" + MainActivity.inProcess, Toast.LENGTH_LONG).show();
+                        }
+                    }
+                    return true;
                 }
             });
 
@@ -665,6 +730,14 @@ public class MainActivity extends FragmentActivity {
                             Toast.makeText(getActivity(), getString(R.string.inprocess) + ":" + MainActivity.inProcess, Toast.LENGTH_LONG).show();
                         }
                     }
+                }
+            });
+
+            mySecondImagePrefsButton.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Toast.makeText(getActivity(), getString(R.string.modifyImage), Toast.LENGTH_SHORT).show();
+                    return true;
                 }
             });
 
@@ -763,6 +836,7 @@ public class MainActivity extends FragmentActivity {
                 }
             });
 
+
             Button startButton = (Button) rootView.findViewById(R.id.buttonStart);
             startButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -775,6 +849,10 @@ public class MainActivity extends FragmentActivity {
             return rootView;
         }
 
-
+        private void startViewer(int k) {
+            Intent i = new Intent(getActivity(), ImageViewer.class);
+            i.putExtra("path", k);
+            startActivity(i);
+        }
     }
 }

@@ -21,4 +21,8 @@
             <item name="android:disabledAlpha">2</item>
         </style>
 
+    <style name="selected">
+        <item name="android:background">#990000</item>
+    </style>
+
 </resources>

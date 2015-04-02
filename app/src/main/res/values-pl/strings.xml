@@ -44,4 +44,8 @@
     <string name="stepTwo">\n\Krok dwa: Rozpocznij kopiowanie (czerwony).</string>
     <string name="stepThree">\n\nKrok trzy: Spojrzeć na wyniki i kliknij na jednym z łączonych obrazów, żeby go zabezpieczyć.</string>
 
+    <string name="play">Grać</string>
+    <string name="firstImage">Pierwsze zdjęcie</string>
+    <string name="secondImage">Drugie zdjęcie</string>
+
 </resources>
