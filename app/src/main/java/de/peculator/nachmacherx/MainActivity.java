@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
 
 /**
  * Created by peculator
@@ -347,9 +348,10 @@ public class MainActivity extends FragmentActivity {
             if (whichImage == 0 && myBitmap != null || whichImage == 1 && myBitmapResult != null) {
                 final String[] items = new String[]{getResources().getString(R.string.rotateR),
                         getResources().getString(R.string.rotateL), getResources().getString(R.string.mirrorH),
-                        getResources().getString(R.string.mirrorV)};
+                        getResources().getString(R.string.mirrorV),getResources().getString(R.string.openOtherApplication)};
 
-                final Integer[] icons = new Integer[]{R.drawable.ic_action_rotate_right, R.drawable.ic_action_rotate_left, R.drawable.android_flip, R.drawable.android_flip_v};
+                final Integer[] icons = new Integer[]{R.drawable.ic_action_rotate_right, R.drawable.ic_action_rotate_left,
+                        R.drawable.android_flip, R.drawable.android_flip_v, R.drawable.abc_ic_menu_share_mtrl_alpha};
                 ListAdapter adapter = new ArrayAdapterWithIcon(getActivity(), items, icons);
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -370,6 +372,14 @@ public class MainActivity extends FragmentActivity {
                                 case 3:
                                     mirrorImageSource(true);
                                     break;
+                                case 4:
+                                    Intent editIntent = new Intent(Intent.ACTION_SEND);
+                                    //editIntent.setDataAndType(Uri.parse(myPrefs.getLastURLSource()), "image/jpg");
+                                    editIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                    editIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(myPrefs.getLastURLSource()));
+                                    editIntent.setType("image/jpg");
+                                    startActivity(Intent.createChooser(editIntent, getResources().getString(R.string.sendImageTo)));
+                                    break;
                             }
                         else {
                             switch (which) {
@@ -384,6 +394,12 @@ public class MainActivity extends FragmentActivity {
                                     break;
                                 case 3:
                                     mirrorImageResult(true);
+                                    break;
+                                case 4:
+                                    Intent editIntent = new Intent(Intent.ACTION_EDIT);
+                                    editIntent.setDataAndType(Uri.parse(myPrefs.getLastURLResult()), "image/*");
+                                    editIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                    startActivity(Intent.createChooser(editIntent, null));
                                     break;
                             }
                         }
@@ -754,7 +770,7 @@ public class MainActivity extends FragmentActivity {
                     enableStart();
                 }
 
-                if (myBitmapResult != null)
+                if (myBitmapResult != null && myBitmap != null)
                     myImageViewResult.setImageBitmap(myBitmapResult);
             } else {
                 //Load last image
@@ -787,7 +803,7 @@ public class MainActivity extends FragmentActivity {
 
                 if (myBitmapResult == null) {
                     try {
-                        if (new File(myPrefs.getLastURLResult()).exists()) {
+                        if (new File(myPrefs.getLastURLResult()).exists() && new File(myPrefs.getLastURLSource()).exists()) {
                             BitmapFactory.Options options = new BitmapFactory.Options();
                             options.inJustDecodeBounds = true;
 

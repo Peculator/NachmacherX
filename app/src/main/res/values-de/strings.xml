@@ -47,5 +47,7 @@
     <string name="play">Abspielen</string>
     <string name="firstImage">Erstes Bild</string>
     <string name="secondImage">Zweites Bild</string>
+    <string name="openOtherApplication">Bild zu einer anderen Anwendung senden</string>
+    <string name="sendImageTo">Sende Bild zu:</string>
 
 </resources>

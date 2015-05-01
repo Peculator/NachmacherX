@@ -47,5 +47,7 @@
     <string name="play">Grać</string>
     <string name="firstImage">Pierwsze zdjęcie</string>
     <string name="secondImage">Drugie zdjęcie</string>
+    <string name="openOtherApplication">Wyślij zdjęcie do innej aplikacji</string>
+    <string name="sendImageTo">Wyślij zdjęcie do</string>
 
 </resources>
